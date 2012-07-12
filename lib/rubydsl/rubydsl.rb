@@ -47,7 +47,6 @@ module Cxxproject
       create_multitask
       create_dont_bail_on_first_task
       describe_clean_task
-      create_console_task
 
       load_nontoolchain_plugins
     end
@@ -57,10 +56,6 @@ module Cxxproject
       registry.get_all_plugins.select { |name|name.index('toolchain') == nil }.each do |plugin|
         registry.load_plugin(plugin, PluginContext.new(self, ALL_BUILDING_BLOCKS, @self))
       end
-    end
-
-    def create_console_task
-      require 'cxxproject/utils/console'
     end
 
     def initialize_logging(build_dir)
