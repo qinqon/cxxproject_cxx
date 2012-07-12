@@ -217,6 +217,6 @@ module Cxxproject
   end
 end
 
-def projects_to_rake(projects, output_dir, toolchain_name, base_dir)
-  Cxxproject::RubyDsl.new(projects, output_dir, toolchain_name, base_dir)
+def projects_to_rake(projects, output_dir, toolchain_name, base_dir, &block)
+  Cxxproject::RubyDsl.new(projects, output_dir, toolchain_name, base_dir, &block)
 end
