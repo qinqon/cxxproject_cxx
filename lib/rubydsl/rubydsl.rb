@@ -54,7 +54,7 @@ module Cxxproject
     def load_nontoolchain_plugins
       registry = Frazzle::Registry.new('cxxproject', '_', '-')
       registry.get_all_plugins.select { |name|name.index('toolchain') == nil }.each do |plugin|
-        registry.load_plugin(plugin, PluginContext.new(self, ALL_BUILDING_BLOCKS, @self))
+        registry.load_plugin(plugin, PluginContext.new(self, ALL_BUILDING_BLOCKS, @log))
       end
     end
 
