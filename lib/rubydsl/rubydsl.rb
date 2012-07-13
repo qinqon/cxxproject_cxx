@@ -20,9 +20,10 @@ require 'cxxproject/plugin_context'
 module Cxxproject
 
   class RubyDsl
-    attr_accessor :base_dir, :all_tasks
+    attr_accessor :base_dir, :all_tasks, :build_dir
 
     def initialize(projects, build_dir, toolchain_name, base_dir='.', &option_block)
+      @build_dir = build_dir
       option_block.call if option_block
       toolchain = Cxxproject::Toolchain::Provider[toolchain_name]
       raise "no provider with name \"#{toolchain_name}\" found" unless toolchain
