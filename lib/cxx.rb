@@ -14,10 +14,10 @@ require 'cxxproject/buildingblocks/binary_library'
 require 'cxxproject/buildingblocks/custom_building_block'
 require 'cxxproject/buildingblocks/command_line'
 require 'cxxproject/toolchain/colorizing_formatter'
-require 'cxxproject/eval_context'
 require 'cxxproject/plugin_context'
+require 'cxx/eval_context'
 
-module Cxxproject
+module Cxx
 
   class RubyDsl
     attr_accessor :base_dir, :all_tasks, :build_dir
@@ -33,7 +33,7 @@ module Cxxproject
       end
 
       # TODO: this should be cleaned up somehow...
-      if Utils::OS.linux?
+      if Cxxproject::Utils::OS.linux?
         toolchain[:LINKER][:LIB_PREFIX_FLAGS] = "-Wl,--whole-archive"
         toolchain[:LINKER][:LIB_POSTFIX_FLAGS] = "-Wl,--no-whole-archive"
       end
@@ -55,7 +55,7 @@ module Cxxproject
     def load_nontoolchain_plugins
       registry = Frazzle::Registry.new('cxxproject', '_', '-')
       registry.get_all_plugins.select { |name|name.index('toolchain') == nil }.each do |plugin|
-        registry.load_plugin(plugin, PluginContext.new(self, ALL_BUILDING_BLOCKS, @log))
+        registry.load_plugin(plugin, Cxxproject::PluginContext.new(self, Cxxproject::ALL_BUILDING_BLOCKS, @log))
       end
     end
 
@@ -150,10 +150,10 @@ module Cxxproject
         @projects.each { |c| @log.debug " *  #{c}" }
       end
       register_projects()
-      ALL_BUILDING_BLOCKS.values.each do |block|
+      Cxxproject::ALL_BUILDING_BLOCKS.values.each do |block|
         prepare_block(block, toolchain, build_dir)
       end
-      ALL_BUILDING_BLOCKS.values.inject([]) do |memo,block|
+      Cxxproject::ALL_BUILDING_BLOCKS.values.inject([]) do |memo,block|
         @log.debug "creating tasks for block: #{block.name}/taskname: #{block.get_task_name} (#{block})"
         memo << block.convert_to_rake()
       end
@@ -209,7 +209,7 @@ module Cxxproject
     def define_project_info_task
       desc "shows your defined projects"
       task :project_info do
-        ALL_BUILDING_BLOCKS.each_value do |bb|
+        Cxxproject::ALL_BUILDING_BLOCKS.each_value do |bb|
           pp bb
         end
       end
@@ -218,6 +218,6 @@ module Cxxproject
   end
 end
 
-def projects_to_rake(projects, output_dir, toolchain_name, base_dir, &block)
-  Cxxproject::RubyDsl.new(projects, output_dir, toolchain_name, base_dir, &block)
+def cxx(projects, output_dir, toolchain_name, base_dir, &block)
+  Cxx::RubyDsl.new(projects, output_dir, toolchain_name, base_dir, &block)
 end

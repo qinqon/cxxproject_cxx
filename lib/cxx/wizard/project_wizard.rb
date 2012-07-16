@@ -5,12 +5,12 @@ require 'rubygems'
 def prepare_project(dir_name)
   begin
     require 'highline/import'
-    
+
     say "This will create a new cxx-project in directory: '#{dir_name}'"
     if confirm("Are you sure you want to continue") then
       building_block = choose_building_block
       generate_makefile = confirm("Do you also whant to generate a rakefile", building_block.eql?("exe"))
-      
+
       toolchain = nil
       if generate_makefile then
         toolchain = choose_toolchain
@@ -22,7 +22,7 @@ def prepare_project(dir_name)
     else
       say "Stopped project-setup!"
     end
-    
+
   rescue Interrupt
     say "\nStopped project-setup!"
   rescue LoadError
@@ -45,7 +45,7 @@ def choose_toolchain
   res = nil
   toolchains = []
   toolchain_pattern = /cxxproject_(.*)toolchain/
-  Gem::Specification.find_all do |gem|
+  Gem::Specification.latest_specs.each do |gem|
     if gem.name =~ toolchain_pattern then
       toolchains << $1
     end
@@ -67,19 +67,19 @@ def choose_toolchain
 end
 
 def create_project(dir_name, building_block, toolchain, generate_rakefile)
-  rakefile_template = IO.read(File.join(File.dirname(__FILE__),"..","tools","Rakefile.rb.template"))
-  project_template = IO.read(File.join(File.dirname(__FILE__),"..","tools","project.rb.template"))
+  rakefile_template = IO.read(File.join(File.dirname(__FILE__),"Rakefile.rb.template"))
+  project_template = IO.read(File.join(File.dirname(__FILE__),"project.rb.template"))
   binding = create_binding("new-item", building_block, toolchain)
-  
+
   if !File.directory?(dir_name) then
     mkdir_p(dir_name, :verbose => false)
   end
-  
+
   rakefile_file = "#{dir_name}/Rakefile.rb"
   if generate_rakefile && (!File.exists?(rakefile_file) || confirm("Override existing '#{rakefile_file}'")) then
     write_template(rakefile_file, rakefile_template, binding)
   end
-  
+
   project_file = "#{dir_name}/project.rb"
   if !File.exists?(project_file) || confirm("Override existing '#{project_file}'") then
     write_template(project_file, project_template, binding)
