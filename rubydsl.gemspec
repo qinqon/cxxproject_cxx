@@ -1,5 +1,5 @@
 spec = Gem::Specification.new do |s|
-  s.name = 'cxxprojectrubydsl'
+  s.name = 'cxx'
   s.description = 'ruby-based dsl for cxxproject'
   s.summary = 'defines the method cxx_configuration'
   s.version = '0.1.4'

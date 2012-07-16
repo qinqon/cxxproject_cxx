@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
-$:.unshift File.join(File.dirname(__FILE__),"..","lib")
 
-require 'tools/project_wizard'
+require 'cxx/wizard/project_wizard'
 
 if ARGV.size < 1
 	puts "usage: cxx project-dir"
