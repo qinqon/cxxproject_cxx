@@ -1,8 +1,13 @@
+# -*- encoding: utf-8 -*-
+gem_name = 'cxx'
+require File.expand_path("lib/#{gem_name}/version")
+
 spec = Gem::Specification.new do |s|
-  s.name = 'cxx'
+  s.name = gem_name
+  s.version = Cxx::VERSION
+
   s.description = 'ruby-based dsl for cxxproject'
   s.summary = 'defines the method cxx_configuration'
-  s.version = '0.1.6'
   s.author = 'christian koestlin'
   s.email = 'christian.koestlin@gmail.com'
   s.platform = Gem::Platform::RUBY
