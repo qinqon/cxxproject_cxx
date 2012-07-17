@@ -16,6 +16,7 @@ module Cxx
   end
 
   class EvalContext
+    include Cxxproject
     include Cxxproject::Context
 
     attr_accessor :all_blocks
