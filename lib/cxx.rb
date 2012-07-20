@@ -1,6 +1,6 @@
 require 'rubygems'
 
-require 'cxxproject/cxxproject'
+require 'cxxproject'
 require 'logger'
 require 'pp'
 require 'pathname'

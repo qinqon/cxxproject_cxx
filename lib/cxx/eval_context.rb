@@ -1,5 +1,5 @@
+require 'cxxproject'
 require 'cxxproject/context'
-require 'cxxproject/cxxproject'
 require 'cxxproject/utils/utils'
 
 module Cxx
