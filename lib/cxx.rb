@@ -32,12 +32,6 @@ module Cxx
         @projects = projects.to_a
       end
 
-      # TODO: this should be cleaned up somehow...
-      if Cxxproject::Utils::OS.linux?
-        toolchain[:LINKER][:LIB_PREFIX_FLAGS] = "-Wl,--whole-archive"
-        toolchain[:LINKER][:LIB_POSTFIX_FLAGS] = "-Wl,--no-whole-archive"
-      end
-
       Rake::application.deriveIncludes = true
 
       initialize_logging(build_dir)

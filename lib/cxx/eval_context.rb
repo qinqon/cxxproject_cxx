@@ -77,9 +77,9 @@ module Cxx
     # * :output_dir
     def source_lib(name, hash)
       raise "not a hash" unless hash.is_a?(Hash)
-      check_hash(hash,[:sources, :includes, :dependencies, :toolchain, :file_dependencies, :output_dir])
+      check_hash(hash, [:sources, :includes, :dependencies, :toolchain, :file_dependencies, :output_dir, :whole_archive])
       raise ":sources need to be defined" unless hash.has_key?(:sources)
-      bblock = Cxxproject::SourceLibrary.new(name)
+      bblock = Cxxproject::SourceLibrary.new(name, hash[:whole_archive])
       bblock.set_sources(hash[:sources])
       bblock.set_includes(get_as_array(hash, :includes)) if hash.has_key?(:includes)
       bblock.set_tcs(hash[:toolchain]) if hash.has_key?(:toolchain)
