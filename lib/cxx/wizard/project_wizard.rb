@@ -1,11 +1,19 @@
 require 'rake'
 require 'erb'
 require 'rubygems'
+require 'cxx/version'
 
 def prepare_project(dir_name)
   begin
     require 'highline/import'
-
+    if ["--help","-h"].include?(dir_name)
+      say "cxx [directory] -- will create a new project in [directory]"
+      return
+    end
+    if ["--version","-v"].include?(dir_name)
+      say "cxx version #{Cxx::VERSION}"
+      return
+    end
     say "This will create a new cxx-project in directory: '#{dir_name}'"
     if confirm("Are you sure you want to continue") then
       building_block = choose_building_block

@@ -162,7 +162,7 @@ module Cxx
     def check_for_project_configs
       cd(@base_dir, :verbose => false) do
         @projects.each do |p|
-          abort "project config #{p} cannot be found!" unless File.exists?(p)
+          abort "project config #{p} cannot be found in #{Dir.pwd}!" unless File.exists?(p)
         end
       end
     end
