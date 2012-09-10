@@ -92,6 +92,14 @@ module Cxx
       all_blocks << bblock
     end
 
+    def bin_lib(name, hash={})
+      raise "not a hash" unless hash.is_a?(Hash)
+      check_hash(hash, [:includes, :lib_path])
+      bblock = Cxxproject::BinaryLibrary.new(name)
+      bblock.set_includes(get_as_array(hash, :includes)) if hash.has_key?(:includes)
+      bblock.add_lib_element(Cxxproject::HasLibraries::SEARCH_PATH, hash[:lib_path], true) if hash.has_key?(:lib_path)
+    end
+
     # specify some binary libs
     # returns all binary libs as array
     def bin_libs(*names)
