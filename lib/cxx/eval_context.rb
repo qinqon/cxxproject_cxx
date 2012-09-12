@@ -3,18 +3,6 @@ require 'cxxproject/context'
 require 'cxxproject/utils/utils'
 
 module Cxx
-  class BinaryLibs
-    class << self
-      def [](*libs)
-        libraries = Array.new
-        libs.each do |x|
-          libraries << Cxxproject::BinaryLibrary.new(x)
-        end
-        libraries
-      end
-    end
-  end
-
   class EvalContext
     include Cxxproject
     include Cxxproject::Context
@@ -38,7 +26,6 @@ module Cxx
     # * :sources
     # * :includes
     # * :dependencies
-    # * :libpath
     # * :output_dir
     def exe(name, hash)
       raise "not a hash" unless hash.is_a?(Hash)
@@ -46,25 +33,12 @@ module Cxx
       bblock = Cxxproject::Executable.new(name)
       bblock.set_sources(hash[:sources]) if hash.has_key?(:sources)
       bblock.set_includes(get_as_array(hash, :includes)) if hash.has_key?(:includes)
-      calc_lib_searchpath(hash).each { |sp| bblock.add_lib_element(Cxxproject::HasLibraries::SEARCH_PATH, sp) }
       if hash.has_key?(:dependencies)
         bblock.set_dependencies(hash[:dependencies])
         hash[:dependencies].each { |d| bblock.add_lib_element(Cxxproject::HasLibraries::DEPENDENCY, d) }
       end
       bblock.set_output_dir(hash[:output_dir]) if hash.has_key?(:output_dir)
       all_blocks << bblock
-    end
-
-    def calc_lib_searchpath(hash)
-      if hash.has_key?(:libpath)
-        hash[:libpath]
-      else
-        if Cxxproject::Utils::OS.linux? || Cxxproject::Utils::OS.mac?
-          ["/usr/local/lib","/usr/lib"]
-        elsif Cxxproject::Utils::OS.windows?
-          ["C:/tool/cygwin/lib", "C:/Tool/cygwin/usr/local/lib"]
-        end
-      end
     end
 
     # specify a sourcelib
@@ -92,23 +66,24 @@ module Cxx
       all_blocks << bblock
     end
 
-    def bin_lib(name, hash={})
+    def bin_lib(name, hash=Hash.new)
       raise "not a hash" unless hash.is_a?(Hash)
       check_hash(hash, [:includes, :lib_path])
+
       bblock = Cxxproject::BinaryLibrary.new(name)
       bblock.set_includes(get_as_array(hash, :includes)) if hash.has_key?(:includes)
       bblock.add_lib_element(Cxxproject::HasLibraries::SEARCH_PATH, hash[:lib_path], true) if hash.has_key?(:lib_path)
+      return bblock
     end
 
     # specify some binary libs
     # returns all binary libs as array
-    def bin_libs(*names)
-      res = []
+    def bin_libs(names, hash=Hash.new)
+      raise "not a hash" unless hash.is_a?(Hash)
+      check_hash(hash, [:includes, :lib_path])
+
       mapped = names.map{|n|n.to_s}
-      mapped.each do |name|
-        res << Cxxproject::BinaryLibrary.new(name)
-      end
-      mapped
+      return mapped.map{|name|bin_lib(name, hash)}
     end
 
     def compile(name, hash)
