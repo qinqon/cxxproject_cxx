@@ -1,15 +1,21 @@
+PATH
+  remote: ../cxxproject
+  specs:
+    cxxproject (0.6.29)
+      colored
+      frazzle
+
+PATH
+  remote: ../frazzle
+  specs:
+    frazzle (0.1.3)
+
 GEM
   remote: http://rubygems.org/
   specs:
     builder (3.1.3)
     colored (1.2)
-    cxxproject (0.6.28)
-      colored
-      frazzle
-    cxxproject_gcctoolchain (0.1.10)
-      cxxproject
     diff-lcs (1.1.3)
-    frazzle (0.1.3)
     grit (2.5.0)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
@@ -35,9 +41,8 @@ PLATFORMS
 
 DEPENDENCIES
   builder
-  cxxproject
-  cxxproject_gcctoolchain
-  frazzle
+  cxxproject!
+  frazzle!
   grit
   roodi
   rspec
