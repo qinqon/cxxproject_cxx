@@ -2,12 +2,16 @@ require 'cxx'
 require 'cxxproject/ext/rake_listener.rb'
 require 'cxxproject/utils/cleanup'
 
+OUT_DIR='cxxbuild'
+
 describe Rake::Task do
   compiler = 'gcc'
+
   before(:each) do
     Rake::application.options.silent = true
     Cxxproject::Utils.cleanup_rake
   end
+
   after(:each) do
     Cxxproject::Utils.cleanup_rake
   end
@@ -16,13 +20,13 @@ describe Rake::Task do
     file 'test.cc' => 'compiler'
     File.delete('test.cc') if File.exists?('test.cc')
     sl = Cxxproject::SourceLibrary.new('testlib').set_sources(['test.cc']).set_project_dir(".")
-    cxx = cxx([], 'build', compiler, '.')
+    cxx = cxx([], OUT_DIR, compiler, '.')
 
     task = Rake::application['lib:testlib']
     task.invoke
     task.failure.should eq(true)
 
-    FileUtils.rm_rf('build')
+    FileUtils.rm_rf(OUT_DIR)
   end
 
   it 'should not fail if include-dependency of object is missing' do
@@ -34,7 +38,7 @@ describe Rake::Task do
     end
 
     sl = Cxxproject::SourceLibrary.new('testlib').set_sources(['test.cc']).set_project_dir(".")
-    cxx([], 'build', compiler, '.')
+    cxx([], OUT_DIR, compiler, '.')
 
     task = Rake::application['lib:testlib']
     task.invoke
@@ -47,9 +51,9 @@ describe Rake::Task do
     end
 
     sl = Cxxproject::SourceLibrary.new('testlib').set_sources(['test.cc']).set_project_dir(".")
-    cxx([], 'build', compiler, '.')
+    cxx([], OUT_DIR, compiler, '.')
 
-    task = Rake::application['build/libs/libtestlib.a']
+    task = Rake::application[File.join(OUT_DIR, 'libs', 'libtestlib.a')]
     task.invoke
     task.failure.should == false
 
