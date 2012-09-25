@@ -149,6 +149,9 @@ module Cxx
       end
       Cxxproject::ALL_BUILDING_BLOCKS.values.inject([]) do |memo,block|
         @log.debug "creating tasks for block: #{block.name}/taskname: #{block.get_task_name} (#{block})"
+        if block.name != block.get_task_name
+          task block.name => block.get_task_name # create task with simple name of buildinblock
+        end
         memo << block.convert_to_rake()
       end
     end
