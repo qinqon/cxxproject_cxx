@@ -186,10 +186,12 @@ module Cxx
 
     def eval_file(b, project_file)
       loadContext = EvalContext.new
+      project_text = File.read(File.basename(project_file))
       begin
-        loadContext.eval_project(File.read(File.basename(project_file)), project_file, Dir.pwd)
+        loadContext.eval_project(project_text, project_file, Dir.pwd)
       rescue Exception => e
         puts "problems with #{File.join(b, project_file)} in dir: #{Dir.pwd}"
+        puts project_text
         raise e
       end
 
@@ -197,9 +199,6 @@ module Cxx
         block.
           set_project_dir(Dir.pwd).
           set_config_files([Dir.pwd + "/" + project_file])
-        if block.respond_to?(:sources) && block.sources.instance_of?(Rake::FileList)
-          block.set_sources(block.sources.to_a)
-        end
       end
     end
 
