@@ -11,7 +11,7 @@ desc 'cleanup all built gems'
 task :clean do
   projects.each do |p|
     cd "../#{p}" do
-      sh 'rake clobber_package'
+      sh 'rm -rf pkg'
     end
   end
 end

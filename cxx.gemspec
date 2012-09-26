@@ -11,7 +11,7 @@ spec = Gem::Specification.new do |s|
   s.author = 'christian koestlin'
   s.email = 'christian.koestlin@gmail.com'
   s.platform = Gem::Platform::RUBY
-  s.files = `git ls-files`.split($\)
+  s.files = Dir.glob("{bin,lib}/**/*")
   s.require_path = 'lib'
 
   s.add_dependency 'cxxproject'
