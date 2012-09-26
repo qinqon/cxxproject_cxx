@@ -17,16 +17,9 @@ describe Rake::Task do
   end
 
   it 'should fail if source of object is missing' do
-    file 'test.cc' => 'compiler'
-    File.delete('test.cc') if File.exists?('test.cc')
-    sl = Cxxproject::SourceLibrary.new('testlib').set_sources(['test.cc']).set_project_dir(".")
-    cxx = cxx([], OUT_DIR, compiler, '.')
-
-    task = Rake::application['lib:testlib']
-    task.invoke
-    task.failure.should eq(true)
-
-    FileUtils.rm_rf(OUT_DIR)
+    expect {
+      Cxxproject::SourceLibrary.new('testlib').set_sources(['test.cc']).set_project_dir(".")
+    }.to raise_exception
   end
 
   it 'should not fail if include-dependency of object is missing' do
