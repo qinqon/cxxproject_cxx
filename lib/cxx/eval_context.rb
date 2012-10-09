@@ -21,7 +21,7 @@ module Cxx
       instance_eval(project_text)
     end
 
-    def attatch_sources(hash,bblock)
+    def attach_sources(hash,bblock)
       if hash.has_key?(:sources)
         ss = hash[:sources]
         if ss.class == Array || ss.class == Rake::FileList
@@ -32,7 +32,7 @@ module Cxx
       end
     end
 
-    def attatch_includes(hash,bblock)
+    def attach_includes(hash,bblock)
       bblock.set_includes(get_as_array(hash, :includes)) if hash.has_key?(:includes)
     end
 
@@ -46,8 +46,8 @@ module Cxx
       raise "not a hash" unless hash.is_a?(Hash)
       check_hash(hash,[:sources,:includes,:dependencies,:libpath,:output_dir])
       bblock = Cxxproject::Executable.new(name)
-      attatch_sources(hash,bblock)
-      attatch_includes(hash,bblock)
+      attach_sources(hash,bblock)
+      attach_includes(hash,bblock)
       if hash.has_key?(:dependencies)
         bblock.set_dependencies(hash[:dependencies])
         hash[:dependencies].each { |d| bblock.add_lib_element(Cxxproject::HasLibraries::DEPENDENCY, d) }
@@ -69,8 +69,8 @@ module Cxx
       check_hash(hash, [:sources, :includes, :dependencies, :toolchain, :file_dependencies, :output_dir, :whole_archive])
       raise ":sources need to be defined" unless hash.has_key?(:sources)
       bblock = Cxxproject::SourceLibrary.new(name, hash[:whole_archive])
-      attatch_sources(hash,bblock)
-      attatch_includes(hash,bblock)
+      attach_sources(hash,bblock)
+      attach_includes(hash,bblock)
       bblock.set_tcs(hash[:toolchain]) if hash.has_key?(:toolchain)
       if hash.has_key?(:dependencies)
         bblock.set_dependencies(hash[:dependencies])
@@ -86,7 +86,7 @@ module Cxx
       check_hash(hash, [:includes, :lib_path])
 
       bblock = Cxxproject::BinaryLibrary.new(name)
-      attatch_includes(hash,bblock)
+      attach_includes(hash,bblock)
       bblock.add_lib_element(Cxxproject::HasLibraries::SEARCH_PATH, hash[:lib_path], true) if hash.has_key?(:lib_path)
       return bblock
     end
@@ -105,8 +105,8 @@ module Cxx
       raise "not a hash" unless hash.is_a?(Hash)
       check_hash(hash,[:sources,:includes])
       bblock = Cxxproject::SingleSource.new(name)
-      attatch_sources(hash,bblock)
-      attatch_includes(hash,bblock)
+      attach_sources(hash,bblock)
+      attach_includes(hash,bblock)
       all_blocks << bblock
     end
 
