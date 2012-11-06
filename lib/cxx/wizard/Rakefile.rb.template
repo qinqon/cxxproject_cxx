@@ -2,7 +2,7 @@ require 'cxx'
 
 unittest_flags = {
   :DEFINES => ['UNIT_TEST','CPPUNIT_MAIN=main'],
-  :FLAGS => "-O0 -g3 -Wall"
+  :FLAGS => ['-O0', '-g3', '-Wall']
 }
 
 cxx(Dir['**/project.rb'], 'out', "<%= toolchain %>", './') do
