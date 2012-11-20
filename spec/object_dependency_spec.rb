@@ -14,11 +14,13 @@ describe Rake::Task do
 
   after(:each) do
     Cxxproject::Utils.cleanup_rake
+    FileUtils.rm_rf('test.cc')
+    FileUtils.rm_rf('test.h')
   end
 
   it 'should fail if source of object is missing' do
     expect {
-      Cxxproject::SourceLibrary.new('testlib').set_sources(['test.cc']).set_project_dir(".")
+      Cxxproject::SourceLibrary.new('testlib').set_sources(['test.cc'])
     }.to raise_exception
   end
 
@@ -50,7 +52,6 @@ describe Rake::Task do
     task.invoke
     task.failure.should == false
 
-    FileUtils.rm_rf('test.cc')
   end
 
 end
