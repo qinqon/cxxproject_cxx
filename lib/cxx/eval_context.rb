@@ -36,6 +36,13 @@ module Cxx
       bblock.set_includes(get_as_array(hash, :includes)) if hash.has_key?(:includes)
     end
 
+    def attach_tags(hash, bblock)
+      bblock.tags = Set.new
+      if hash.has_key?(:tags)
+        bblock.tags = hash[:tags].to_set
+      end
+    end
+
     # specify an executable
     # hash supports:
     # * :sources
@@ -44,16 +51,18 @@ module Cxx
     # * :output_dir
     def exe(name, hash)
       raise "not a hash" unless hash.is_a?(Hash)
-      check_hash(hash,[:sources,:includes,:dependencies,:libpath,:output_dir])
+      check_hash(hash,[:sources,:includes,:dependencies,:libpath,:output_dir, :tags])
       bblock = Cxxproject::Executable.new(name)
       attach_sources(hash,bblock)
       attach_includes(hash,bblock)
+      attach_tags(hash, bblock)
       if hash.has_key?(:dependencies)
         bblock.set_dependencies(hash[:dependencies])
         hash[:dependencies].each { |d| bblock.add_lib_element(Cxxproject::HasLibraries::DEPENDENCY, d) }
       end
       bblock.set_output_dir(hash[:output_dir]) if hash.has_key?(:output_dir)
       all_blocks << bblock
+      bblock
     end
 
     # specify a sourcelib
@@ -66,11 +75,12 @@ module Cxx
     # * :output_dir
     def source_lib(name, hash)
       raise "not a hash" unless hash.is_a?(Hash)
-      check_hash(hash, [:sources, :includes, :dependencies, :toolchain, :file_dependencies, :output_dir, :whole_archive])
+      check_hash(hash, [:sources, :includes, :dependencies, :toolchain, :file_dependencies, :output_dir, :whole_archive, :tags])
       raise ":sources need to be defined" unless hash.has_key?(:sources)
       bblock = Cxxproject::SourceLibrary.new(name, hash[:whole_archive])
       attach_sources(hash,bblock)
       attach_includes(hash,bblock)
+      attach_tags(hash, bblock)
       bblock.set_tcs(hash[:toolchain]) if hash.has_key?(:toolchain)
       if hash.has_key?(:dependencies)
         bblock.set_dependencies(hash[:dependencies])
@@ -79,6 +89,7 @@ module Cxx
       bblock.file_dependencies = hash[:file_dependencies] if hash.has_key?(:file_dependencies)
       bblock.set_output_dir(hash[:output_dir]) if hash.has_key?(:output_dir)
       all_blocks << bblock
+      bblock
     end
 
     def bin_lib(name, hash=Hash.new)

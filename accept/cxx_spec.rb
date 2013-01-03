@@ -163,4 +163,20 @@ describe Cxx::RubyDsl do
     end
   end
 
+  it 'should be possible to define a exe with tags' do
+    Cxxproject::Utils.cleanup_rake
+
+    loadContext = Cxx::EvalContext.new
+    loadContext.eval_project("cxx_configuration { exe 'test', :tags => ['a', 'b'] }", nil, Dir.pwd)
+    loadContext.all_blocks.size.should eq(1)
+  end
+
+  it 'should be possible to define a sourcelib with tags' do
+    Cxxproject::Utils.cleanup_rake
+
+    loadContext = Cxx::EvalContext.new
+    loadContext.eval_project("cxx_configuration { source_lib 'test', :tags => ['a', 'b'], :sources => ['accept/testdata/basic/lib1/lib1.cpp'] }", nil, Dir.pwd)
+    loadContext.all_blocks.size.should eq(1)
+  end
+
 end

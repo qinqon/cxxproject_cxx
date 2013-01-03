@@ -38,6 +38,7 @@ module Cxx
       @all_tasks = instantiate_tasks(toolchain, build_dir)
 
       create_generic_tasks
+      create_tag_tasks
       create_console_colorization
       create_multitask
       create_dont_bail_on_first_task
@@ -103,6 +104,18 @@ module Cxx
       tasks = [:lib, :exe, :run]
       tasks << nil
       tasks.each { |i| create_filter_task_with_namespace(i) }
+    end
+
+    def create_tag_tasks
+      desc 'invoke tagged building blocks'
+      task :tag, :tag do |t, args|
+        if args[:tag]
+          current_tag = args[:tag]
+          Rake::Task::tasks.select {|t|t.tags.include?(current_tag)}.each do |task|
+            task.invoke
+          end
+        end
+      end
     end
 
     def create_filter_task_with_namespace(basename)
