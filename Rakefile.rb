@@ -27,9 +27,9 @@ end
 desc 'run acceptance tests'
 RSpec::Core::RakeTask.new(:accept) do |t|
   t.pattern = 'accept/**/*_spec.rb'
-#  if ENV['BUILD_SERVER']
-#    t.rspec_opts = '-r ./junit.rb -f JUnit -o build/test_details.xml'
-#  end
+  if ENV['BUILD_SERVER']
+    t.rspec_opts = '-r ./junit.rb -f JUnit -o build/test_details.xml'
+  end
 end
 #
 #desc 'cleanup all built gems'
