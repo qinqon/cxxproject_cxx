@@ -24,8 +24,8 @@ module Cxx
 
     def initialize(projects, build_dir, toolchain_name, base_dir='.', &option_block)
       @build_dir = build_dir
-      option_block.call if option_block
       toolchain = Cxxproject::Toolchain::Provider[toolchain_name]
+      option_block.call(toolchain) if option_block
       raise "no provider with name \"#{toolchain_name}\" found" unless toolchain
       @base_dir = base_dir
       cd(@base_dir, :verbose => false) do
