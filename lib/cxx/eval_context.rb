@@ -66,6 +66,26 @@ module Cxx
       all_blocks << bblock
       bblock
     end
+    
+    # specify an executable
+    # hash supports:
+    # * :sources
+    # * :includes
+    # * :dependencies
+    # * :output_dir
+    def shared(name, hash)
+      raise "not a hash" unless hash.is_a?(Hash)
+      check_hash(hash,[:sources,:includes,:dependencies,:libpath,:output_dir])
+      bblock = Cxxproject::SharedLibrary.new(name)
+      attach_sources(hash,bblock)
+      attach_includes(hash,bblock)
+      if hash.has_key?(:dependencies)
+        bblock.set_dependencies(hash[:dependencies])
+        hash[:dependencies].each { |d| bblock.add_lib_element(Cxxproject::HasLibraries::DEPENDENCY, d) }
+      end
+      bblock.set_output_dir(hash[:output_dir]) if hash.has_key?(:output_dir)
+      all_blocks << bblock
+    end
 
     # specify an executable
     # hash supports:
@@ -160,6 +180,5 @@ module Cxx
       end
       all_blocks << bblock
     end
-
-  end
+end
 end
