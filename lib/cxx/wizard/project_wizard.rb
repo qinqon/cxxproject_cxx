@@ -16,7 +16,7 @@ def prepare_project(dir_name)
     end
     say "This will create a new cxx-project in directory: '#{dir_name}'"
     if confirm("Are you sure you want to continue") then
-      building_block = choose_building_block
+      building_block, whole_archive = choose_building_block
       generate_makefile = confirm("Do you also whant to generate a rakefile", building_block.eql?("exe"))
 
       toolchain = nil
@@ -25,7 +25,7 @@ def prepare_project(dir_name)
         return unless toolchain
       end
 
-      create_project(dir_name, building_block, toolchain, generate_makefile)
+      create_project(dir_name, building_block, whole_archive, toolchain, generate_makefile)
       say "Completed project-setup ;-)"
     else
       say "Stopped project-setup!"
@@ -39,14 +39,18 @@ def prepare_project(dir_name)
 end
 
 def choose_building_block
-  res = nil
+  building_block = nil
+  whole_archive = nil
   choose do |menu|
-    say "What building-block do you whant to create?"
-    menu.choice(:exe) { res = "exe" }
-    menu.choice(:lib) { res = "source_lib" }
-    menu.prompt = "Select a building-block: "
+    say 'What building-block do you whant to create?'
+    menu.choice(:exe) { building_block = 'exe' }
+    menu.choice(:lib) do
+      building_block = 'source_lib'
+      whole_archive = confirm('Is this a test-library', false)
+    end
+    menu.prompt = 'Select a building-block: '
   end
-  res
+  [building_block, whole_archive]
 end
 
 def choose_toolchain
@@ -74,10 +78,10 @@ def choose_toolchain
   res
 end
 
-def create_project(dir_name, building_block, toolchain, generate_rakefile)
+def create_project(dir_name, building_block, whole_archive, toolchain, generate_rakefile)
   rakefile_template = IO.read(File.join(File.dirname(__FILE__),"Rakefile.rb.template"))
   project_template = IO.read(File.join(File.dirname(__FILE__),"project.rb.template"))
-  binding = create_binding("new-item", building_block, toolchain)
+  binding = create_binding("new-item", building_block, whole_archive, toolchain)
 
   if !File.directory?(dir_name) then
     mkdir_p(dir_name, :verbose => false)
@@ -94,7 +98,7 @@ def create_project(dir_name, building_block, toolchain, generate_rakefile)
   end
 end
 
-def create_binding(name, building_block, toolchain)
+def create_binding(name, building_block, whole_archive, toolchain)
   return binding()
 end
 
