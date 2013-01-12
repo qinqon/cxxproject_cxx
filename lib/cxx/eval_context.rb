@@ -83,7 +83,7 @@ module Cxx
       end
       bblock.set_output_dir(hash[:output_dir]) if hash.has_key?(:output_dir)
       all_blocks << bblock
-    en
+    end
 
     # specify a sourcelib
     # hash supports:
@@ -151,6 +151,5 @@ module Cxx
       end
       all_blocks << bblock
     end
-
-  end
+end
 end
