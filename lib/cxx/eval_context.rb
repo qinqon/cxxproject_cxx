@@ -1,11 +1,13 @@
 require 'cxxproject'
 require 'cxxproject/context'
 require 'cxxproject/utils/utils'
+require 'cxxproject/utils/deprecated'
 
 module Cxx
   class EvalContext
     include Cxxproject
     include Cxxproject::Context
+    extend Deprecated
 
     attr_accessor :all_blocks
 
@@ -65,7 +67,7 @@ module Cxx
       bblock
     end
 
-    # specify a sourcelib
+    # specify a static library
     # hash supports:
     # * :sources
     # * :includes
@@ -73,7 +75,7 @@ module Cxx
     # * :toolchain
     # * :file_dependencies
     # * :output_dir
-    def source_lib(name, hash)
+    def static_lib(name, hash)
       raise "not a hash" unless hash.is_a?(Hash)
       check_hash(hash, [:sources, :includes, :dependencies, :toolchain, :file_dependencies, :output_dir, :whole_archive, :tags])
       raise ":sources need to be defined" unless hash.has_key?(:sources)
@@ -91,6 +93,8 @@ module Cxx
       all_blocks << bblock
       bblock
     end
+
+    deprecated_alias :source_lib, :static_lib
 
     def bin_lib(name, hash=Hash.new)
       raise "not a hash" unless hash.is_a?(Hash)
