@@ -79,7 +79,7 @@ module Cxx
       raise "not a hash" unless hash.is_a?(Hash)
       check_hash(hash, [:sources, :includes, :dependencies, :toolchain, :file_dependencies, :output_dir, :whole_archive, :tags])
       raise ":sources need to be defined" unless hash.has_key?(:sources)
-      bblock = Cxxproject::SourceLibrary.new(name, hash[:whole_archive])
+      bblock = Cxxproject::StaticLibrary.new(name, hash[:whole_archive])
       attach_sources(hash,bblock)
       attach_includes(hash,bblock)
       attach_tags(hash, bblock)
