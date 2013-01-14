@@ -71,15 +71,24 @@ module Cxx
     # * :includes
     # * :dependencies
     # * :output_dir
+    # * :major
+    # * :minor
     def shared(name, hash)
       raise "not a hash" unless hash.is_a?(Hash)
-      check_hash(hash,[:sources,:includes,:dependencies,:libpath,:output_dir])
+      check_hash(hash,[:sources,:includes,:dependencies,:libpath,:output_dir,:major,:minor])
+      raise "add the :major version to shared library #{name}" unless not hash.has_key?(:minor) or hash.has_key?(:major)
       bblock = Cxxproject::SharedLibrary.new(name)
       attach_sources(hash,bblock)
       attach_includes(hash,bblock)
       if hash.has_key?(:dependencies)
         bblock.set_dependencies(hash[:dependencies])
         hash[:dependencies].each { |d| bblock.add_lib_element(Cxxproject::HasLibraries::DEPENDENCY, d) }
+      end
+      if hash.has_key?(:minor)
+        bblock.minor = hash[:minor]
+      end
+      if hash.has_key?(:major)
+        bblock.major = hash[:major]
       end
       bblock.set_output_dir(hash[:output_dir]) if hash.has_key?(:output_dir)
       all_blocks << bblock
