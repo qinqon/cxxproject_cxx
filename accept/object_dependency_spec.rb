@@ -20,7 +20,7 @@ describe Rake::Task do
 
   it 'should fail if source of object is missing' do
     expect {
-      Cxxproject::SourceLibrary.new('testlib').set_sources(['test.cc'])
+      Cxxproject::StaticLibrary.new('testlib').set_sources(['test.cc'])
     }.to raise_exception
   end
 
@@ -32,7 +32,7 @@ describe Rake::Task do
     File.open('test.h', 'w') do |io|
     end
 
-    sl = Cxxproject::SourceLibrary.new('testlib').set_sources(['test.cc']).set_project_dir(".")
+    sl = Cxxproject::StaticLibrary.new('testlib').set_sources(['test.cc']).set_project_dir(".")
     cxx([], OUT_DIR, compiler, '.')
 
     task = Rake::application['lib:testlib']
@@ -45,7 +45,7 @@ describe Rake::Task do
     File.open('test.cc', 'w') do |io|
     end
 
-    sl = Cxxproject::SourceLibrary.new('testlib').set_sources(['test.cc']).set_project_dir(".")
+    sl = Cxxproject::StaticLibrary.new('testlib').set_sources(['test.cc']).set_project_dir(".")
     cxx([], OUT_DIR, compiler, '.')
 
     task = Rake::application[File.join(OUT_DIR, 'libs', 'libtestlib.a')]

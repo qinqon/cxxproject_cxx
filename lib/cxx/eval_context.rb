@@ -1,11 +1,13 @@
 require 'cxxproject'
 require 'cxxproject/context'
 require 'cxxproject/utils/utils'
+require 'cxxproject/utils/deprecated'
 
 module Cxx
   class EvalContext
     include Cxxproject
     include Cxxproject::Context
+    extend Deprecated
 
     attr_accessor :all_blocks
 
@@ -94,7 +96,30 @@ module Cxx
       all_blocks << bblock
     end
 
-    # specify a sourcelib
+    # specify an executable
+    # hash supports:
+    # * :sources
+    # * :includes
+    # * :dependencies
+    # * :output_dir
+    # * :tags
+    def shared_lib(name, hash)
+      raise "not a hash" unless hash.is_a?(Hash)
+      check_hash(hash, [:sources, :includes, :dependencies, :output_dir, :tags])
+      bblock = Cxxproject::SharedLibrary.new(name)
+      attach_sources(hash,bblock)
+      attach_includes(hash,bblock)
+      attach_tags(hash, bblock)
+      if hash.has_key?(:dependencies)
+        bblock.set_dependencies(hash[:dependencies])
+        hash[:dependencies].each { |d| bblock.add_lib_element(Cxxproject::HasLibraries::DEPENDENCY, d) }
+      end
+      bblock.set_output_dir(hash[:output_dir]) if hash.has_key?(:output_dir)
+      all_blocks << bblock
+      bblock
+    end
+
+    # specify a static library
     # hash supports:
     # * :sources
     # * :includes
@@ -102,11 +127,13 @@ module Cxx
     # * :toolchain
     # * :file_dependencies
     # * :output_dir
-    def source_lib(name, hash)
+    # * :whole_archive
+    # * :tags
+    def static_lib(name, hash)
       raise "not a hash" unless hash.is_a?(Hash)
       check_hash(hash, [:sources, :includes, :dependencies, :toolchain, :file_dependencies, :output_dir, :whole_archive, :tags])
       raise ":sources need to be defined" unless hash.has_key?(:sources)
-      bblock = Cxxproject::SourceLibrary.new(name, hash[:whole_archive])
+      bblock = Cxxproject::StaticLibrary.new(name, hash[:whole_archive])
       attach_sources(hash,bblock)
       attach_includes(hash,bblock)
       attach_tags(hash, bblock)
@@ -120,6 +147,8 @@ module Cxx
       all_blocks << bblock
       bblock
     end
+
+    deprecated_alias :source_lib, :static_lib
 
     def bin_lib(name, hash=Hash.new)
       raise "not a hash" unless hash.is_a?(Hash)

@@ -2,5 +2,5 @@ cxx_configuration do
   <%= building_block %> "<%= name %>",
     :sources => FileList['**/*.cpp'],
     :includes => ['include'],
-    :dependencies => []
+    :dependencies => []<%= whole_archive ? ",\n    :whole_archive => true" : "" %>
 end
