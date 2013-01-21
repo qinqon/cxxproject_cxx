@@ -1,5 +1,4 @@
 require 'cxx'
-require 'cxxproject/ext/rake_listener.rb'
 require 'cxxproject/utils/cleanup'
 
 OUT_DIR='cxxbuild'
