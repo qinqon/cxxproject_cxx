@@ -45,7 +45,7 @@ def choose_building_block
     say 'What building-block do you whant to create?'
     menu.choice(:exe) { building_block = 'exe' }
     menu.choice(:lib) do
-      building_block = 'source_lib'
+      building_block = 'static_lib'
       whole_archive = confirm('Is this a test-library', false)
     end
     menu.prompt = 'Select a building-block: '

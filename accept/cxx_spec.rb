@@ -176,7 +176,7 @@ describe Cxx::RubyDsl do
     Cxxproject::Utils.cleanup_rake
 
     loadContext = Cxx::EvalContext.new
-    loadContext.eval_project("cxx_configuration { source_lib 'test', :tags => ['a', 'b'], :sources => ['accept/testdata/basic/lib1/lib1.cpp'] }", nil, Dir.pwd)
+    loadContext.eval_project("cxx_configuration { static_lib 'test', :tags => ['a', 'b'], :sources => ['accept/testdata/basic/lib1/lib1.cpp'] }", nil, Dir.pwd)
     loadContext.all_blocks.size.should eq(1)
   end
 
