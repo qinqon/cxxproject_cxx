@@ -1,7 +1,6 @@
 require "bundler/gem_tasks"
 require './rake_helper/spec.rb'
-
-task :package => :build
+task :package => [:build, :preinstall]
 
 projects = ['frazzle',
             'cxxproject',
@@ -22,6 +21,10 @@ task :prepare_accept do
   gems.each do |gem|
     sh "gem install ../#{gem}/pkg/*.gem"
   end
+end
+
+task :preinstall do
+  sh 'gem install highline'
 end
 
 desc 'run acceptance tests'
